@@ -31,6 +31,7 @@ format:
 9. **Parquet Structure: Diagram**
 10. **Key Takeaways**
 11. **When to Use & Next Steps**
+12. **Conclusion**
 
 ::: notes
 Present the agenda to outline the structure. Highlight how we build from foundational concepts to practical tips and new tools like Parquet. Ask if the audience has prior Spark experience to gauge level.
@@ -343,8 +344,6 @@ Discuss use cases with examples from industry (e.g., data lakes in e-commerce). 
 ---
 
 ## Conclusion
-
-### Key Takeaways
 
 - **Partitioning**: Aim for 100MB–1GB partitions, use low-cardinality columns for pruning, monitor for skew.
 - **Parquet**: Columnar storage for efficient analytics, compression, and schema evolution.
