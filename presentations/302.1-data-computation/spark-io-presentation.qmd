@@ -180,10 +180,10 @@ Recommend optimal partition size with rationale: too small increases overhead, t
 - Deep nesting: Limits effectiveness
 
 ```{mermaid}
-flowchart LR
-    A[Pitfalls] --> B[Too Many Overhead]
-    A --> C[Skew Imbalance]
-    A --> D[Small Files Waste]
+flowchart TD
+    A["Pitfalls"] --> B["Too Many<br/>Partitions"]
+    A --> C["Data Skew<br/>Imbalance"]
+    A --> D["Small Files<br/>Waste"]
     
     classDef pitfall fill:#ffebee,stroke:#c62828
     class A,B,C,D pitfall
