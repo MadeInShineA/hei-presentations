@@ -1,0 +1,34 @@
+:root {
+  --r-main-font-size: 0.95em;
+  --r-main-font: sans-serif;
+}
+.reveal {
+  font-family: sans-serif !important;
+}
+.reveal section {
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 20px;
+}
+.reveal table {
+  font-size: 0.85em;
+  width: 100%;
+  table-layout: fixed;
+}
+.reveal th, .reveal td {
+  word-wrap: break-word;
+}
+ul, ol {
+  margin-top: 1em;
+  line-height: 1.4;
+  font-size: 0.95em;
+}
+pre {
+  font-size: 0.85em;
+}
+.reveal h1, .reveal h2, .reveal h3 {
+  font-size: 1.6em;
+}
+.reveal .fragment {
+  transition: opacity 0.5s ease-in-out;
+}

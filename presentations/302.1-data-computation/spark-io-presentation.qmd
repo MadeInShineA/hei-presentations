@@ -1,0 +1,365 @@
+---
+title: "Spark I/O and File Layout: Partitioning Best Practices & Parquet Introduction"
+format:
+  revealjs:
+    theme: sky
+    transition: fade
+    incremental: false
+    slide-number: true
+    preview-links: auto
+    navigation-mode: grid
+    footer: "Spark I/O Presentation | © 2025"
+    logo: 
+      path: "https://avatars.githubusercontent.com/u/108901596?s=200&v=4"
+      width: 200
+      height: 200
+      placement: "top-left"
+    css: ../../styles/302.1-data-computation/spark-io-presentation-style.scss
+---
+
+## Spark I/O and File Layout
+
+### Partitioning Best Practices & Parquet Introduction
+
+::: notes
+Welcome to this overview on optimizing Spark I/O.
+:::
+
+---
+
+## Agenda
+
+1. **Spark I/O Basics**
+2. **Partitioning Essentials**
+3. **Performance Impact**
+4. **Best Practices: Size & Strategies**
+5. **Best Practices: Pruning & Pitfalls**
+6. **Best Practices: Summary & Config**
+7. **Parquet Introduction**
+8. **Parquet Structure: Layers**
+9. **Parquet Structure: Diagram**
+10. **Key Takeaways**
+11. **When to Use & Next Steps**
+
+::: notes
+Logical flow: Basics → Partitioning → Performance → Practices → Parquet → Takeaways.
+:::
+
+---
+
+## Spark I/O Basics
+
+Apache Spark I/O handles efficient data read/write across distributed systems.
+
+**Key Aspects**:
+
+- Distributed cluster processing
+- Formats: CSV, JSON, Parquet, ORC
+- Storage: HDFS, S3, local
+- In-memory optimization
+
+**Core Components**:
+
+- DataSource API: Schema inference
+- Partitioning: Parallelism
+- Shuffling: Data redistribution
+
+::: notes
+Spark I/O unifies big data handling with a focus on performance.
+:::
+
+---
+
+## Spark I/O Pipeline
+
+**Principles**:
+
+- Partitioning: Parallel chunks
+- Locality: Compute near data
+- Fault Tolerance: Lineage
+- Caching: Memory storage
+
+```{mermaid}
+flowchart LR
+    A[Data Source] --> B[DataFrame]
+    B --> C[Partition]
+    C --> D[Process]
+    D --> E[Shuffle]
+    E --> F[Output]
+    
+    classDef input fill:#e1f5fe
+    classDef process fill:#f3e5f5
+    classDef output fill:#e8f5e8
+    class A input
+    class B,C,D process
+    class E,F output
+```
+
+**Operations**:
+
+- Read/Write: With partitioning
+- Streaming: Real-time
+- Connectors: Kafka, etc.
+
+::: notes
+Data flows through this pipeline, with partitioning central to speed.
+:::
+
+---
+
+## Partitioning Essentials
+
+**What & Why?**  
+Divides data for parallel processing, boosting performance.
+
+**Types**:
+
+- Input: File splits (~128MB)
+- Shuffle: Transformations
+- Output: By columns/keys
+
+**Strategies**:
+
+- Range/Hash/File/Custom
+
+**Mechanics**:
+
+- Repartition/Coalesce
+- Bucketing for joins
+- Pruning: Skip irrelevant data
+
+::: notes
+Partitioning enables Spark's scalability—focus on balance.
+:::
+
+---
+
+## Performance Impact
+
+**Benefits**:
+
+- Parallelism: Full cluster use
+- Resource Efficiency: Even load
+
+**Risks**:
+
+- Too Many: Overhead
+- Skew: Imbalance
+- Memory: Overload
+
+**Mitigation**:
+
+- Query alignment
+- Monitor skew
+
+::: notes
+Good partitioning can 2-5x speed; poor can bottleneck.
+:::
+
+---
+
+## Best Practices: Size & Strategies
+
+**Optimal Size**: 100MB–1GB per partition (balance overhead/memory).
+
+**Strategies**:
+
+- Filter columns (date/region)
+- Avoid high cardinality
+- File example: year/month/day
+
+::: notes
+Start with size, then choose columns that match your queries for pruning benefits.
+:::
+
+---
+
+## Best Practices: Pruning & Pitfalls
+
+**Pruning**:
+
+- Pushdown filters for I/O savings (50-90% reduction)
+- Use in WHERE clauses on partition columns
+
+**Pitfalls**:
+
+- Too many: Metadata overhead
+- Skew: Use salting
+- Small files: Coalesce
+- Deep nesting: Limits effectiveness
+
+```{mermaid}
+flowchart LR
+    A[Pitfalls] --> B[Too Many Overhead]
+    A --> C[Skew Imbalance]
+    A --> D[Small Files Waste]
+    
+    classDef pitfall fill:#ffebee,stroke:#c62828
+    class A,B,C,D pitfall
+```
+
+::: notes
+Pruning is a game-changer; pitfalls like skew can silently degrade performance.
+:::
+
+---
+
+## Best Practices: Summary & Config
+
+**Core Guidelines**:
+
+- Select columns wisely: Frequent filters
+- Size appropriately: 100MB–1GB
+- Keep shallow: 2-3 levels max
+- Query-driven: Match patterns
+- Monitor: Skew, files, times
+
+**Key Configurations**:
+
+| Parameter | Purpose | Rec. |
+|-----------|---------|------|
+| maxPartitionBytes | Input size | 100MB–1GB |
+| shuffle.partitions | Shuffle | 200–2000 |
+| adaptive.enabled | Dynamic | true |
+
+::: notes
+Apply these for efficient workflows.
+:::
+
+---
+
+## Parquet Introduction
+
+**What is Parquet?**  
+Columnar format for Spark/big data analytics.
+
+**Why Use It?**:
+
+- Columnar: Read specific columns
+- Compression: 50-95% savings
+- Pushdown: File-level filters
+- Evolution: Schema changes
+
+**vs. Row Formats**:
+
+| Feature | CSV/JSON | Parquet |
+|---------|----------|---------|
+| Storage | Large | Smaller |
+| Speed | Slow | Fast |
+| Schema | Loose | Strong |
+| Opt. | Basic | Advanced |
+
+::: notes
+Parquet + partitioning = optimal for queries.
+:::
+
+---
+
+## Parquet Structure: Layers
+
+**Key Layers**:
+
+1. Header: Magic bytes
+2. Row Groups: 128MB–1GB chunks
+3. Column Chunks: Per column
+4. Pages: ~1MB units
+5. Footer: Schema/stats
+
+**Features**:
+
+- Encoding: RLE/Dictionary
+- Stats: Min/max for pruning
+- Types: Nested support
+
+::: notes
+This enables efficient access and compression.
+:::
+
+---
+
+## Parquet Structure: Diagram
+
+```{mermaid}
+graph TD
+    A[File] --> B[Header]
+    A --> C[Row Groups]
+    C --> D[Column 1]
+    C --> E[Column 2]
+    D --> F[Data Page]
+    A --> G[Footer]
+    
+    classDef meta fill:#f3e5f5
+    classDef data fill:#e8f5e8
+    class B,G meta
+    class C,D,E,F data
+```
+
+::: notes
+Visualize the hierarchical design for columnar efficiency.
+:::
+
+---
+
+## Key Takeaways
+
+**Partitioning**:
+
+- Size: 100MB–1GB
+- Prune: Filter columns
+- Avoid: Skew/high cardinality
+- Monitor: Query patterns
+
+**Parquet**:
+
+- Columnar efficiency
+- Compression gains
+- 10-100x faster queries
+- For analytics/large data
+
+**Checklist**:
+
+- Analyze patterns
+- Optimize sizes/compression
+- Test pruning
+- Monitor performance
+
+::: notes
+Apply these for better Spark workflows.
+:::
+
+---
+
+## When to Use & Next Steps
+
+**Use Cases**:
+
+- Analytics/reporting
+- Data lakes
+- ETL with aggregations
+- Evolving schemas
+
+**Implementation**:
+
+- Low-cardinality partitions
+- Snappy compression
+- Adaptive Spark enabled
+- Iterate on metrics
+
+::: notes
+Start with these for quick wins.
+:::
+
+---
+
+## Thank You
+
+### Questions?
+
+**Resources**: Spark Docs, Parquet Spec
+
+::: notes
+Thanks—open for discussion!
+:::
+
+---
+
