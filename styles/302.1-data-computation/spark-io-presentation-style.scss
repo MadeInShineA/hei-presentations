@@ -32,3 +32,67 @@ pre {
 .reveal .fragment {
   transition: opacity 0.5s ease-in-out;
 }
+
+@media print {
+  :root {
+    --r-main-font-size: 0.95em;
+    --r-main-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  .reveal {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+  }
+  .reveal section {
+    max-height: none;
+    overflow: visible;
+    padding: 20px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .reveal table {
+    font-size: 0.85em;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .reveal th, .reveal td {
+    word-wrap: break-word;
+  }
+  ul, ol {
+    margin-top: 1em;
+    line-height: 1.4;
+    font-size: 0.95em;
+  }
+  pre {
+    font-size: 0.85em;
+  }
+  .reveal h1, .reveal h2, .reveal h3 {
+    font-size: 1.6em;
+  }
+  .reveal .fragment {
+    opacity: 1 !important;
+    transition: none;
+  }
+  /* Hide slide numbers and navigation in print */
+  .slide-number, .reveal .controls {
+    display: none !important;
+  }
+  /* Ensure full page use with background */
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f0f8ff !important; /* Light sky blue to match theme */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .reveal {
+    width: 100%;
+    height: auto;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; /* Reveal sky theme gradient */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .reveal section {
+    background: transparent !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
