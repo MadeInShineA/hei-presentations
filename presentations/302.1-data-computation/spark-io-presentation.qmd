@@ -18,7 +18,7 @@ format:
 ---
 
 
-## Agenda
+## Agenda {.agenda-slide}
 
 1. **Spark I/O Basics**
 2. **Partitioning Essentials**
