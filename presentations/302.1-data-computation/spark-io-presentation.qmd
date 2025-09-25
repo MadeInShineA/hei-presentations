@@ -33,7 +33,7 @@ format:
 11. **When to Use & Next Steps**
 
 ::: notes
-Logical flow: Basics → Partitioning → Performance → Practices → Parquet → Takeaways.
+Present the agenda to outline the structure. Highlight how we build from foundational concepts to practical tips and new tools like Parquet. Ask if the audience has prior Spark experience to gauge level.
 :::
 
 ---
@@ -56,7 +56,7 @@ Apache Spark I/O handles efficient data read/write across distributed systems.
 - Shuffling: Data redistribution
 
 ::: notes
-Spark I/O unifies big data handling with a focus on performance.
+Explain Spark I/O as the backbone for distributed data processing. Stress key aspects like formats and storage for real-world applicability. Transition to core components, noting how they enable scalability.
 :::
 
 ---
@@ -93,7 +93,7 @@ flowchart LR
 - Connectors: Kafka, etc.
 
 ::: notes
-Data flows through this pipeline, with partitioning central to speed.
+Walk through the Mermaid diagram step-by-step, emphasizing partitioning's role in parallelism. Mention operations like read/write to connect theory to practice. Point out how caching reduces I/O bottlenecks.
 :::
 
 ---
@@ -120,7 +120,7 @@ Divides data for parallel processing, boosting performance.
 - Pruning: Skip irrelevant data
 
 ::: notes
-Partitioning enables Spark's scalability—focus on balance.
+Define partitioning simply: dividing data for parallel work. Discuss types and strategies, using examples like date-based partitioning. Warn about mechanics like repartition to avoid common errors.
 :::
 
 ---
@@ -144,7 +144,7 @@ Partitioning enables Spark's scalability—focus on balance.
 - Monitor skew
 
 ::: notes
-Good partitioning can 2-5x speed; poor can bottleneck.
+Highlight benefits with a quick example of speedup. Discuss risks like skew, sharing a real-world story of imbalance causing delays. Introduce mitigation as teaser for best practices.
 :::
 
 ---
@@ -160,7 +160,7 @@ Good partitioning can 2-5x speed; poor can bottleneck.
 - File example: year/month/day
 
 ::: notes
-Start with size, then choose columns that match your queries for pruning benefits.
+Recommend optimal partition size with rationale: too small increases overhead, too large wastes resources. Give strategy examples like partitioning by region for geo-queries to illustrate pruning gains.
 :::
 
 ---
@@ -190,7 +190,7 @@ flowchart LR
 ```
 
 ::: notes
-Pruning is a game-changer; pitfalls like skew can silently degrade performance.
+Explain pruning with a before/after I/O savings example (e.g., scanning 10% of data). Use the diagram to visualize pitfalls; suggest salting for skew and coalescing for small files.
 :::
 
 ---
@@ -214,7 +214,7 @@ Pruning is a game-changer; pitfalls like skew can silently degrade performance.
 | adaptive.enabled | Dynamic | true |
 
 ::: notes
-Apply these for efficient workflows.
+Summarize guidelines verbally, tying back to earlier slides. Walk through the config table, explaining each parameter's impact. Encourage audience to note these for their projects.
 :::
 
 ---
@@ -241,7 +241,7 @@ Columnar format for Spark/big data analytics.
 | Opt. | Basic | Advanced |
 
 ::: notes
-Parquet + partitioning = optimal for queries.
+Introduce Parquet as a columnar powerhouse for analytics. Compare to row formats using the table to show advantages. Tease how it pairs with partitioning for max efficiency.
 :::
 
 ---
@@ -263,7 +263,7 @@ Parquet + partitioning = optimal for queries.
 - Types: Nested support
 
 ::: notes
-This enables efficient access and compression.
+Describe each layer briefly, focusing on how row groups and pages support compression. Mention stats in footer for pruning, linking back to partitioning concepts.
 :::
 
 ---
@@ -286,7 +286,7 @@ graph TD
 ```
 
 ::: notes
-Visualize the hierarchical design for columnar efficiency.
+Use the diagram to illustrate Parquet's structure. Point out how column chunks enable selective reading, reinforcing why it's ideal for analytical queries.
 :::
 
 ---
@@ -315,7 +315,7 @@ Visualize the hierarchical design for columnar efficiency.
 - Monitor performance
 
 ::: notes
-Apply these for better Spark workflows.
+Recap partitioning and Parquet points, using the checklist to reinforce action items. Ask the audience what they plan to implement first.
 :::
 
 ---
@@ -337,7 +337,7 @@ Apply these for better Spark workflows.
 - Iterate on metrics
 
 ::: notes
-Start with these for quick wins.
+Discuss use cases with examples from industry (e.g., data lakes in e-commerce). Suggest next steps like experimenting with Parquet in their Spark jobs.
 :::
 
 ---
@@ -352,7 +352,7 @@ Start with these for quick wins.
 **Apply these practices to optimize your Spark workflows and achieve better performance!**
 
 ::: notes
-Wrap up the session with these essentials.
+Conclude by reiterating the core benefits. Open for Q&A: 'What questions do you have on partitioning or Parquet?'
 :::
 
 ---
