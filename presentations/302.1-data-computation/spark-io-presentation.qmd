@@ -17,15 +17,6 @@ format:
     css: ../../styles/302.1-data-computation/spark-io-presentation-style.scss
 ---
 
-## Spark I/O and File Layout
-
-### Partitioning Best Practices & Parquet Introduction
-
-::: notes
-Welcome to this overview on optimizing Spark I/O.
-:::
-
----
 
 ## Agenda
 
