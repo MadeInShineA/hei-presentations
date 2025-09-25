@@ -48,6 +48,8 @@ uv run quarto render presentations/302.1-data-computation/spark-io-presentation.
 
 Output appears in the same directory as where the .qmd file is
 
+To convert the HTML presentation to PDF, open the generated HTML file, switch to PDF mode in the presentation, and use the browser's print function to save as PDF.
+
 ### Live Preview
 
 For development with auto-reload:
