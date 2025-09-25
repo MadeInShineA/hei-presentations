@@ -351,14 +351,17 @@ Start with these for quick wins.
 
 ---
 
-## Thank You
+## Conclusion
 
-### Questions?
+### Key Takeaways
 
-**Resources**: Spark Docs, Parquet Spec
+- **Partitioning**: Aim for 100MB–1GB partitions, use low-cardinality columns for pruning, monitor for skew.
+- **Parquet**: Columnar storage for efficient analytics, compression, and schema evolution.
+
+**Apply these practices to optimize your Spark workflows and achieve better performance!**
 
 ::: notes
-Thanks—open for discussion!
+Wrap up the session with these essentials.
 :::
 
 ---
