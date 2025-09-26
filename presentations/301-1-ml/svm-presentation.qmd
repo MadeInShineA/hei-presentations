@@ -1,0 +1,345 @@
+---
+title: "Support Vector Machines: Fundamentals and Applications"
+format:
+  revealjs:
+    theme: sky
+    transition: fade
+    incremental: false
+    slide-number: true
+    preview-links: auto
+    navigation-mode: grid
+    footer: "SVM Presentation | © 2025"
+    logo: 
+      path: "https://avatars.githubusercontent.com/u/108901596?s=200&v=4"
+      width: 200
+      height: 200
+      placement: "top-left"
+    css: ../../../styles/302.1-data-computation/spark-io-presentation-style.scss
+---
+
+## Agenda {.agenda-slide}
+
+1. **Introduction to SVMs**
+2. **Core Concepts**
+3. **Mathematical Basics**
+4. **Soft Margin & Variants**
+5. **Kernel Methods**
+6. **Parameter Tuning**
+7. **Applications & Use Cases**
+8. **Pros, Cons & When to Use**
+9. **Key Takeaways**
+10. **Conclusion**
+
+::: notes
+Outline the flow: From basics to practical applications. Gauge audience ML background.
+:::
+
+---
+
+## What is SVM?
+
+Support Vector Machines (SVMs): Supervised ML for classification & regression.
+
+**Core Idea**:
+
+- Find optimal hyperplane separating classes
+- Maximize margin (distance to nearest points)
+
+**Key Elements**:
+
+- **Hyperplane**: Decision boundary
+- **Support Vectors**: Closest points defining it
+- **Versatile**: Linear or non-linear via kernels
+
+::: notes
+Introduce SVM simply: Separation with max margin. Highlight support vectors' efficiency.
+:::
+
+---
+
+## SVM Workflow
+
+High-level steps:
+
+1. Prepare & scale data 📊
+2. Select kernel & tune params ⚙️
+3. Train model: Optimize hyperplane 🧠
+4. Identify support vectors 🎯
+5. Validate & deploy 🧪
+
+```{mermaid}
+flowchart LR
+    A[Data Prep & Scaling] --> B[Kernel & Param Selection]
+    B --> C[Train Model]
+    C --> D[Validate Performance]
+    D --> E{Good?}
+    E -->|No| B
+    E -->|Yes| F[Deploy]
+    
+    classDef step fill:#e8f5e8
+    class A,B,C,D,F step
+    class E decision
+```
+
+::: notes
+Walk through workflow. Emphasize scaling & iteration. Simplified for flow.
+:::
+
+---
+
+## Core Concepts: Linear vs. Non-Linear
+
+**Linear SVM**:
+
+- For separable classes
+- Straight hyperplane
+
+**Non-Linear SVM**:
+
+- Kernel trick maps to higher dimensions
+- Handles complex boundaries
+
+**Simple Example**:
+
+- Class A points: (2,3), (3,4)
+- Class B points: (6,8), (7,7)
+- Max margin line separates them
+
+::: notes
+Contrast with example. Tease kernels for non-linear.
+:::
+
+---
+
+## Mathematical Basics: Hard Margin
+
+For perfectly separable data:
+
+**Objective**: Minimize $\frac{1}{2}||\mathbf{w}||^2$ (max margin)
+
+**Constraints**: $y_i(\mathbf{w} \cdot \mathbf{x_i} + b) \geq 1$
+
+- $\mathbf{w}$: Normal vector to hyperplane
+- $b$: Bias (offset)
+- $y_i$: Labels {-1, +1}
+
+**Support Vectors**: Points where equality holds
+
+::: notes
+High-level math: Goal is flat hyperplane (small w). Only support vectors matter.
+:::
+
+---
+
+## Soft Margin SVM
+
+For noisy/non-separable data:
+
+**Introduce Slack**: $\xi_i \geq 0$ (allows violations)
+
+**Objective**: $\frac{1}{2}||\mathbf{w}||^2 + C \sum \xi_i$
+
+- $C$: Penalty for errors (high C = strict)
+
+**Benefits**:
+
+- Balances margin & accuracy
+- Generalizes better
+
+::: notes
+Explain soft margin handles real data. C trades off fit vs. smoothness.
+:::
+
+---
+
+## SVM Variants Overview
+
+| Variant | Purpose | Key Param | Notes |
+|---------|---------|-----------|-------|
+| C-SVM | Classification | C | Margin vs. errors |
+| Nu-SVM | Classification | ν | Controls support vectors |
+| ε-SVR | Regression | ε | Ignores small errors |
+| Nu-SVR | Regression | ν | Vector control in regression |
+
+**Common**: All use kernels; choose based on task
+
+::: notes
+Overview variants. Focus on classification first, mention regression briefly.
+:::
+
+---
+
+## Kernel Methods: The Trick
+
+**Kernel Trick**: Implicit high-dim mapping without computation.
+
+**Common Kernels**:
+
+- **Linear**: $\mathbf{x_i} \cdot \mathbf{x_j}$ (simple, fast)
+- **Polynomial**: $( \gamma \mathbf{x_i} \cdot \mathbf{x_j} + r )^d$ (flexible curves)
+- **RBF**: $\exp(-\gamma ||\mathbf{x_i} - \mathbf{x_j}||^2 )$ (non-linear, popular)
+- **Sigmoid**: $\tanh( \gamma \mathbf{x_i} \cdot \mathbf{x_j} + r )$ (neural-like)
+
+::: notes
+Kernels enable non-linearity. RBF default for complex data.
+:::
+
+---
+
+## Kernel Selection
+
+| Data Characteristics | Recommended Kernel | Why? |
+|----------------------|--------------------|------|
+| High-dim, few samples | Linear | Efficient, less overfit |
+| Low-dim, many samples | RBF/Polynomial | Captures patterns |
+| Sparse (e.g., text) | Linear | Handles sparsity well |
+| Non-linear boundaries | RBF | Infinite dim flexibility |
+
+**Tip**: Start with linear; switch if needed
+
+::: notes
+Guide choices. Test via CV for best fit.
+:::
+
+---
+
+## Parameter Tuning: C & Gamma
+
+**C (Regularization)**:
+
+- High: Fits training data (risk overfit)
+- Low: Larger margin (risk underfit)
+
+**Gamma (RBF Kernel)**:
+
+- High: Tight influence (complex boundary)
+- Low: Broad influence (smoother)
+
+**Interaction**: High C + High Gamma = Overfit risk
+
+::: notes
+Key params: C for errors, Gamma for shape. Balance via grid search.
+:::
+
+---
+
+## Other Params & Tuning Strategies
+
+**Polynomial Degree (d)**: Higher = more complex (overfit risk)
+
+**Strategies**:
+
+- Scale features first (SVM sensitive)
+- Grid/random search for combos
+- K-fold cross-validation
+- Start simple (linear, default params)
+
+**Flow**:
+
+Scale → Train → CV → Tune → Repeat
+
+::: notes
+Brief on degree. Stress practical tuning: Scale always, iterate with CV.
+:::
+
+---
+
+## Applications & Use Cases
+
+**Domains**:
+
+- Image/Text Classification (high-dim data)
+- Bioinformatics (gene expression)
+- Spam Detection, Sentiment Analysis
+
+**Real Examples**:
+
+| App | Type | Benefit |
+|-----|------|---------|
+| Spam Filter | Classify | Robust to features |
+| Face Detection | Classify | Handles variations |
+| Stock Prediction | Regress | Continuous outputs |
+
+SVM excels in high-dim, sparse data
+
+::: notes
+Show versatility. Strong for text/images; consider alternatives for very large data.
+:::
+
+---
+
+## Pros, Cons & When to Use
+
+**Pros**:
+
+- Effective in high dimensions
+- Memory efficient (only support vectors)
+- Global optimum via convex opt
+- Versatile with kernels
+
+**Cons**:
+
+- Slow training (O(n²))
+- Needs scaling
+- No direct probabilities
+- Black-box for non-linear
+
+**Use When**:
+
+- \# features > \# samples
+- Clear margins possible
+- Text/high-dim tasks
+- Avoid for: Very large datasets
+
+::: notes
+Balanced view. SVM great for specific cases; pair with ensembles if needed.
+:::
+
+---
+
+## Key Takeaways 🎯
+
+**Core**:
+
+- Maximize margin with hyperplane
+- Support vectors define model
+- Kernels for non-linearity
+
+**Tuning**:
+
+- Scale data; tune C/Gamma via CV
+- Linear for simple/high-dim; RBF for complex
+
+**Best Practices**:
+
+- Start linear, iterate
+- Monitor over/underfit
+- Use for high-dim classification
+
+**Apply**: Robust for text/images; test on your data!
+
+::: notes
+Recap essentials. Encourage experimentation. Q&A on tuning/math?
+:::
+
+---
+
+## Conclusion
+
+SVMs: Powerful for separation tasks via max margin & kernels.
+
+**Key Wins**:
+
+- Efficient, robust in high-dim
+- Tune for generalization (C, Gamma)
+
+**Next Steps**:
+
+- Try on your dataset
+- Combine with other ML methods
+
+Questions?
+
+::: notes
+Wrap up: SVM toolkit staple. Open floor for discussion.
+:::
