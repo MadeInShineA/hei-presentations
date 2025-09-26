@@ -115,15 +115,21 @@ Contrast with example. Tease kernels for non-linear.
 
 For perfectly separable data:
 
-**Objective**: Minimize $\frac{1}{2}||\mathbf{w}||^2$ (max margin)
+**Objective**:
 
-**Constraints**: $y_i(\mathbf{w} \cdot \mathbf{x_i} + b) \geq 1$
+Minimize $\frac{1}{2}||\mathbf{w}||^2$ (max margin)
+
+**Constraints**:
+
+$y_i(\mathbf{w} \cdot \mathbf{x_i} + b) \geq 1$
 
 - $\mathbf{w}$: Normal vector to hyperplane
 - $b$: Bias (offset)
 - $y_i$: Labels {-1, +1}
 
-**Support Vectors**: Points where equality holds
+**Support Vectors**:
+
+Points where equality holds
 
 ::: notes
 High-level math: Goal is flat hyperplane (small w). Only support vectors matter.
@@ -135,9 +141,13 @@ High-level math: Goal is flat hyperplane (small w). Only support vectors matter.
 
 For noisy/non-separable data:
 
-**Introduce Slack**: $\xi_i \geq 0$ (allows violations)
+**Introduce Slack**:
 
-**Objective**: $\frac{1}{2}||\mathbf{w}||^2 + C \sum \xi_i$
+$\xi_i \geq 0$ (allows violations)
+
+**Objective**:
+
+$\frac{1}{2}||\mathbf{w}||^2 + C \sum \xi_i$
 
 - $C$: Penalty for errors (high C = strict)
 
@@ -161,7 +171,9 @@ Explain soft margin handles real data. C trades off fit vs. smoothness.
 | ε-SVR | Regression | ε | Ignores small errors |
 | Nu-SVR | Regression | ν | Vector control in regression |
 
-**Common**: All use kernels; choose based on task
+**Common**:
+
+All use kernels; choose based on task
 
 ::: notes
 Overview variants. Focus on classification first, mention regression briefly.
@@ -171,7 +183,9 @@ Overview variants. Focus on classification first, mention regression briefly.
 
 ## Kernel Methods: The Trick
 
-**Kernel Trick**: Implicit high-dim mapping without computation.
+**Kernel Trick**:
+
+Implicit high-dim mapping without computation.
 
 **Common Kernels**:
 
@@ -195,7 +209,9 @@ Kernels enable non-linearity. RBF default for complex data.
 | Sparse (e.g., text) | Linear | Handles sparsity well |
 | Non-linear boundaries | RBF | Infinite dim flexibility |
 
-**Tip**: Start with linear; switch if needed
+**Tip**:
+
+Start with linear; switch if needed
 
 ::: notes
 Guide choices. Test via CV for best fit.
@@ -215,7 +231,9 @@ Guide choices. Test via CV for best fit.
 - High: Tight influence (complex boundary)
 - Low: Broad influence (smoother)
 
-**Interaction**: High C + High Gamma = Overfit risk
+**Interaction**:
+
+High C + High Gamma = Overfit risk
 
 ::: notes
 Key params: C for errors, Gamma for shape. Balance via grid search.
@@ -225,7 +243,9 @@ Key params: C for errors, Gamma for shape. Balance via grid search.
 
 ## Other Params & Tuning Strategies
 
-**Polynomial Degree (d)**: Higher = more complex (overfit risk)
+**Polynomial Degree (d)**:
+
+Higher = more complex (overfit risk)
 
 **Strategies**:
 
@@ -234,9 +254,26 @@ Key params: C for errors, Gamma for shape. Balance via grid search.
 - K-fold cross-validation
 - Start simple (linear, default params)
 
-**Flow**:
+---
+
+## Flow of Parameters Tuning
 
 Scale → Train → CV → Tune → Repeat
+
+```{mermaid}
+flowchart TD
+    A[Scale Data] --> B[Choose Initial Parameters]
+    B --> C[Train SVM Model]
+    C --> D[Evaluate with Cross-Validation]
+    D --> E{Performance Satisfactory?}
+    E -->|No| F[Tune Parameters]
+    F --> C
+    E -->|Yes| G[Final Model]
+    
+    classDef step fill:#e8f5e8
+    class A,B,C,D,F,G step
+    class E decision
+```
 
 ::: notes
 Brief on degree. Stress practical tuning: Scale always, iterate with CV.
@@ -316,7 +353,9 @@ Balanced view. SVM great for specific cases; pair with ensembles if needed.
 - Monitor over/underfit
 - Use for high-dim classification
 
-**Apply**: Robust for text/images; test on your data!
+**Apply**:
+
+Robust for text/images; test on your data!
 
 ::: notes
 Recap essentials. Encourage experimentation. Q&A on tuning/math?
@@ -343,3 +382,9 @@ Questions?
 ::: notes
 Wrap up: SVM toolkit staple. Open floor for discussion.
 :::
+
+---
+
+## Sources
+
+**Writing assistant** : Grock 4 fast free

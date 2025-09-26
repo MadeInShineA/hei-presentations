@@ -10,5 +10,3 @@ wheels/
 .venv
 
 AGENTS.md
-**/*.html
-**/*_files
