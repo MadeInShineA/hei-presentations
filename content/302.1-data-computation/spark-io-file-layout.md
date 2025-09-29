@@ -454,11 +454,17 @@ flowchart TD
 | `parquet.compression` | Compression codec for Parquet files | SNAPPY (good balance of speed and size) |
 
 ### 8. Best Practices Summary
-
 - **Partitioning**: Aim for 100MB-1GB partitions, partition by frequently filtered columns, avoid high cardinality columns
 - **Format selection**: Use Parquet for analytical workloads, especially with Spark, for best performance
 - **Performance optimization**: Leverage predicate pushdown, column pruning, and appropriate compression settings
 - **Schema management**: Design for evolution and maintain consistent schemas across related datasets
 - **Monitoring**: Regularly assess partition distribution and query performance to identify optimization opportunities
+
+### Demonstration Notebook
+For hands-on exploration, see the Marimo notebook `parquet_demo.py` in this directory. It generates sample data, compares CSV and Parquet storage/performance, and demonstrates schema evolution:
+
+```bash
+marimo run content/302.1-data-computation/parquet_demo.py
+```
 
 By following these practices and leveraging the power of Parquet with appropriate partitioning strategies, you can significantly improve the performance and efficiency of your Spark data processing workflows. 🚀

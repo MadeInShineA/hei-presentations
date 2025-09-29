@@ -230,7 +230,7 @@ Columnar format for Spark/big data analytics.
 - Columnar: Read specific columns
 - Compression: 50-95% savings
 - Pushdown: File-level filters
-- Evolution: Schema changes
+- Schema Evolution: Parquet supports backward/forward compatibility, allowing addition, deletion, or renaming of columns without rewriting entire datasets, ideal for evolving data pipelines.
 
 **vs. Row Formats**:
 
@@ -328,7 +328,7 @@ Recap partitioning and Parquet points, using the checklist to reinforce action i
 - Analytics/reporting
 - Data lakes
 - ETL with aggregations
-- Evolving schemas
+- Evolving Schemas: Ideal for datasets where structure changes over time, as Parquet handles schema modifications efficiently without data loss or full reprocessing.
 
 **Implementation**:
 

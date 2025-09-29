@@ -10,3 +10,8 @@ wheels/
 .venv
 
 AGENTS.md
+**/*.html
+**/*_files
+.python-version
+
+content/302.1-data-computation/demo_data/

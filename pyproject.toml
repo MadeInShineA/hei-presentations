@@ -4,4 +4,10 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "deap>=1.4.3",
+    "marimo>=0.16.2",
+    "matplotlib>=3.10.6",
+    "pyspark>=4.0.1",
+    "seaborn>=0.13.2",
+]
