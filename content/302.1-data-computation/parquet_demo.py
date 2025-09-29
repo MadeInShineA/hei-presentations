@@ -163,7 +163,7 @@ def _(COLORS, mo):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(SparkSession, mo):
     import logging
     import warnings
@@ -171,8 +171,8 @@ def _(SparkSession, mo):
     logging.getLogger("py4j.java_gateway").setLevel(logging.ERROR)
     logging.getLogger("pyspark").setLevel(logging.ERROR)
     logging.getLogger("pyspark.sql").setLevel(logging.ERROR)
-    
- 
+
+
     # Initialize Spark Session
     spark = (
         SparkSession.builder.master("local[1]")
@@ -182,7 +182,7 @@ def _(SparkSession, mo):
         .config("spark.sql.execution.arrow.pyspark.enabled", "false")
         .getOrCreate()
     )
-    
+
     spark.sparkContext.setLogLevel("ERROR")
 
     mo.md("SparkSession initialized.")
@@ -206,36 +206,6 @@ def _(COLORS, mo):
     """
     )
     return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    # Create interactive slider for number of rows
-    n_rows_slider = mo.ui.slider(
-        start=10000,
-        stop=500000,
-        step=10000,
-        value=100000,
-        label="📊 Number of Rows",
-        show_value=True
-    )
-    return (n_rows_slider,)
-
-
-@app.cell(hide_code=True)
-def _(COLORS, mo, n_rows_slider):
-    mo.md(rf"""
-    <div style="background: linear-gradient(135deg, {COLORS['secondary']}10 0%, {COLORS['accent']}10 100%); border-left: 6px solid {COLORS['secondary']}; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 25px 0;">
-    <h3 style="color: {COLORS['secondary']}; margin-top: 0; text-align: center;">🎛️ Adjust Parameters</h3>
-    </div>
-    """)
-
-    # Display the slider centered
-    _controls = mo.center(n_rows_slider)
-    _controls
-    return
-
-
 
 
 @app.cell(hide_code=True)
@@ -264,10 +234,38 @@ def _(COLORS, mo):
 
 @app.cell(hide_code=True)
 def _(mo):
- run_button = mo.ui.run_button(
-     label="🚀 Run Parquet vs CSV Demo"
- )
- return (run_button,)
+    # Create interactive slider for number of rows
+    n_rows_slider = mo.ui.slider(
+        start=10000,
+        stop=500000,
+        step=10000,
+        value=100000,
+        label="📊 Number of Rows",
+        show_value=True
+    )
+    return (n_rows_slider,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    run_button = mo.ui.run_button(
+        label="🚀 Run Parquet vs CSV Demo"
+    )
+    return (run_button,)
+
+
+@app.cell(hide_code=True)
+def _(COLORS, mo, n_rows_slider):
+    mo.md(rf"""
+    <div style="background: linear-gradient(135deg, {COLORS['secondary']}10 0%, {COLORS['accent']}10 100%); border-left: 6px solid {COLORS['secondary']}; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 25px 0;">
+    <h3 style="color: {COLORS['secondary']}; margin-top: 0; text-align: center;">🎛️ Adjust Parameters</h3>
+    </div>
+    """)
+
+    # Display the slider centered
+    _controls = mo.center(n_rows_slider)
+    _controls
+    return
 
 
 @app.cell(hide_code=True)
@@ -327,7 +325,7 @@ def _(
         # Create Spark DataFrame
         sdf = spark.createDataFrame(pdf, schema)
         sdf = sdf.coalesce(1)  # Reduce to single partition to avoid memory allocation warnings during Parquet write
-        
+
         # Demo directory
         script_dir = os.path.dirname(os.path.abspath(__file__))
         demo_dir = os.path.join(script_dir, "demo_data")
