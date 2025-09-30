@@ -1,6 +1,6 @@
 # HEI Presentations
 
-This repository hosts Quarto-based slide presentations for HEI (Higher Education Institution) courses, focusing on machine learning (301-1-ML) and data computation (302.1) topics. It includes materials on SVM, decision trees/random forests, Spark IO, file layouts, and Parquet for efficient data processing.
+This repository hosts Quarto-based slide presentations for HEI courses, focusing on machine learning (301-1-ML) and data computation (302.1) topics. It includes materials on SVM, decision trees/random forests, Spark IO, file layouts, and Parquet for efficient data processing.
 
 ## Features
 
@@ -43,16 +43,19 @@ This repository hosts Quarto-based slide presentations for HEI (Higher Education
 To generate static HTML/PDF slides:
 
 For Spark IO:
+
 ```
 uv run quarto render presentations/302.1-data-computation/spark-io-presentation.qmd
 ```
 
 For SVM:
+
 ```
 uv run quarto render presentations/301-1-ml/svm-presentation.qmd
 ```
 
 For Decision Trees/Random Forests:
+
 ```
 uv run quarto render presentations/301-1-ml/decision_trees_random_forests-presentation.qmd
 ```
@@ -64,6 +67,7 @@ To convert HTML to PDF, open the generated HTML, switch to PDF mode, and print f
 ### Live Preview
 
 For development with auto-reload (e.g., for Spark IO):
+
 ```
 uv run quarto preview presentations/302.1-data-computation/spark-io-presentation.qmd
 ```
@@ -75,12 +79,14 @@ This serves at `http://localhost:xxxx` (port shown on start). Adjust path for ot
 Quarto executes Python cells during rendering. Ensure dependencies (e.g., PySpark, scikit-learn) are added via `uv add pyspark scikit-learn` before rendering.
 
 Example in .qmd:
+
 ```python
 import pyspark
 # Spark code here
 ```
 
 Or for ML:
+
 ```python
 from sklearn.svm import SVC
 # ML code here
@@ -118,12 +124,14 @@ hei-presentations/
 
 1. Create directories under `presentations/`, `content/`, and `styles/` if needed (e.g., `303-data-analysis/`).
 2. Add `.qmd` file in `presentations/<topic>/` with YAML frontmatter:
+
    ```yaml
    ---
    title: "New Topic"
    format: revealjs
    ---
    ```
+
 3. Include content, code cells, and reference MD files.
 4. Add custom styles in `styles/<topic>/` if needed.
 5. Update `pyproject.toml` for new dependencies, then `uv sync`.
