@@ -1,0 +1,418 @@
+---
+title: "Decision Trees and Random Forests: Fundamentals and Ensemble Methods"
+format:
+  revealjs:
+    theme: sky
+    transition: fade
+    incremental: false
+    slide-number: true
+    preview-links: auto
+    navigation-mode: grid
+    footer: "Decision Trees & Random Forests Presentation | © 2025"
+    logo: 
+      path: "https://avatars.githubusercontent.com/u/108901596?s=200&v=4"
+      width: 200
+      height: 200
+      placement: "top-left"
+    css: ../../styles/302.1-data-computation/spark-io-presentation-style.scss
+---
+
+## Agenda {.agenda-slide}
+
+1. **Decision Trees**
+   - Fundamentals
+   - Structure & Prediction
+   - Building Process
+   - Examples & Graphs
+   - Splitting Criteria
+   - Pruning & Parameters
+
+2. **Random Forests**
+   - Fundamentals
+   - Structure & Prediction
+   - Building Process
+   - Key Components
+   - Parameters & Advantages
+
+3. **Key Takeaway
+   - When to Use
+   - Performance Considerations
+   - Advanced Techniques
+   - Conclusion
+
+---
+
+
+## What are Decision Trees?
+
+Supervised models for classification and regression.
+
+- Tree-like structure: Root to leaves
+- Non-parametric: No data assumptions
+- Interpretable: Easy to visualize decisions
+
+:::{.notes}
+Decision Trees mimic human choices. Great for explainability.
+:::
+
+---
+
+## Decision Tree Structure and Prediction
+
+- **Root Node**: Full dataset, first split
+- **Internal Nodes**: Feature thresholds (e.g., Age > 30?)
+- **Leaf Nodes**: Predictions (class or value)
+
+Depth shows decision complexity.
+
+**Prediction Flow**
+
+```{mermaid}
+flowchart LR
+    A[Input] --> B[Root]
+    B --> C[Split?]
+    C -->|Yes| D[Branch]
+    C -->|No| E[Leaf]
+    D --> E
+    E --> F[Output]
+    
+    classDef input fill:#e1f5fe
+    classDef process fill:#f3e5f5
+    classDef output fill:#e8f5e8
+    class A input
+    class B,C,D process
+    class E,F output
+```
+
+Traverse from root to leaf.
+
+:::{.notes}
+Hierarchical refinement of data. Fast inference via rules.
+:::
+
+---
+
+## How Decision Trees Work
+
+Recursive splitting of data:
+
+1. Select best feature at root
+2. Split using criteria (Gini/entropy for class, MSE for regression)
+3. Recurse until stop (e.g., max depth)
+4. Predict: Majority class or mean value
+5. Prune to avoid overfitting
+
+:::{.notes}
+Builds by dividing data step-by-step.
+:::
+
+---
+
+
+## Tree Examples
+
+**Classification (Iris):**
+
+- Root: Petal length > 2.5 cm?
+- Yes: Petal width split → Versicolor
+- No: Setosa
+
+**Regression (House Prices):**
+
+- Root: Size > 1000 sq ft?
+- Yes: $300k mean
+- No: $150k mean
+
+:::{.notes}
+Simple paths show decisions.
+:::
+
+---
+
+## Decision Tree Graph (Iris)
+
+```{mermaid}
+graph TD
+    A["Root: Petal Length <= 2.45 cm?"]
+    A -->|"Yes"| C["Leaf: Setosa (100% Pure)"]
+    A -->|"No"| B["Petal Width <= 1.75 cm?"]
+    B -->|"Yes"| E["Leaf: Versicolor (~90% Pure)"]
+    B -->|"No"| D["Leaf: Virginica (~50%)"]
+
+    style A fill:#2563eb20,stroke:#2563eb,stroke-width:2px
+    style B fill:#7c3aed20,stroke:#7c3aed,stroke-width:2px
+    style C fill:#16a34a20,stroke:#16a34a,stroke-width:2px
+    style D fill:#16a34a20,stroke:#16a34a,stroke-width:2px
+    style E fill:#16a34a20,stroke:#16a34a,stroke-width:2px
+```
+
+Partitions data by features to pure leaves.
+
+:::{.notes}
+Visualize splits for clarity.
+:::
+
+---
+
+## Regression Tree Graph (House Prices)
+
+```{mermaid}
+graph TD
+    A["Root: Size > 1000 sq ft?"]
+    A -->|"No"| B["Leaf: $150k (Small Houses)"]
+    A -->|"Yes"| C["Bedrooms > 3?"]
+    C -->|"No"| D["Leaf: $250k (2-3 Bed)"]
+    C -->|"Yes"| E["Leaf: $350k (4+ Bed)"]
+
+    style A fill:#2563eb20,stroke:#2563eb,stroke-width:2px
+    style C fill:#7c3aed20,stroke:#7c3aed,stroke-width:2px
+    style B fill:#16a34a20,stroke:#16a34a,stroke-width:2px
+    style D fill:#16a34a20,stroke:#16a34a,stroke-width:2px
+    style E fill:#16a34a20,stroke:#16a34a,stroke-width:2px
+```
+
+Leaves hold mean values for predictions.
+
+:::{.notes}
+Shows continuous value handling.
+:::
+
+---
+
+## Splitting Criteria
+
+Choose splits to maximize purity/minimize error.
+
+**Classification:**
+
+- Gini Impurity: Measures misclassification risk (0 pure, 0.5 max impure)
+- Entropy: Measures uncertainty; aim for max information gain
+- Gini faster; both similar results
+
+**Regression:**
+
+- MSE: Average squared error; sensitive to outliers
+- MAE: Average absolute error; robust to outliers
+
+Default: Gini for class, MSE for regression.
+
+:::{.notes}
+Criteria guide best splits. Pick based on data needs.
+:::
+
+---
+
+## Pruning and Regularization
+
+Prevents overfitting:
+
+- **Pre-pruning**: Stop early (max depth, min samples)
+- **Post-pruning**: Trim after building
+
+| Type | Pros | Cons |
+|------|------|------|
+| Pre | Fast | May underfit |
+| Post | Accurate | Slower |
+
+Use min_samples_leaf for smoothing.
+
+:::{.notes}
+Balance fit and generalization.
+:::
+
+---
+
+## DT Parameters
+
+| Parameter | Description | Impact |
+|-----------|-------------|--------|
+| Max Depth | Tree levels | Deeper = more fit, risk overfit |
+| Min Samples Split | For internal nodes | Higher = less overfit |
+| Min Samples Leaf | For leaves | Smooths predictions |
+
+Tune with grid search/CV.
+
+:::{.notes}
+Control complexity.
+:::
+
+---
+
+## What are Random Forests?
+
+Ensemble of decision trees (extension of DT).
+
+- Combines multiple trees for better accuracy
+- Reduces overfitting via diversity (bagging + random features)
+- Voting/averaging for predictions
+- Feature importances for insights
+- OOB error for built-in validation
+
+:::{.notes}
+RF builds on DT by averaging many trees for robustness.
+:::
+
+---
+
+## RF Structure and Prediction
+
+**Structure Graph (Simplified):**
+
+```{mermaid}
+flowchart LR
+    A[Load] --> B[Bootstrap]
+    B --> C[Build Trees]
+    C --> D[Collect]
+    D --> E[Aggregate]
+    E --> F[Final]
+    
+    classDef input fill:#e1f5fe
+    classDef process fill:#f3e5f5
+    classDef output fill:#e8f5e8
+    class A input
+    class B,C,D,E process
+    class F output
+```
+
+**Prediction Flow:**
+
+```{mermaid}
+flowchart TD
+    INPUT["New Sample"] --> TREE1["Tree 1"]
+    INPUT --> TREE2["Tree 2"]
+    INPUT --> TREES["... N Trees"]
+    TREE1 --> AGG["Aggregate"]
+    TREE2 --> AGG
+    TREES --> AGG
+    AGG --> OUTPUT["Final"]
+
+    style INPUT fill:#f3f4f620,stroke:#6b7280
+    style TREE1,TREE2,TREES fill:#d9770620,stroke:#d97706
+    style AGG fill:#7c3aed20,stroke:#7c3aed
+    style OUTPUT fill:#16a34a40,stroke:#16a34a
+```
+
+Multiple trees to consensus; parallel predictions.
+
+:::{.notes}
+Visualize ensemble process and voting.
+:::
+
+---
+
+
+
+## How Random Forests Work
+
+1. Bootstrap samples (bagging: ~63% unique data per tree)
+2. Random features per split (sqrt(n) for class, n/3 for reg)
+3. Build independent trees (using DT criteria)
+4. Aggregate: Majority vote (class) or average (reg)
+5. Less greedy splits reduce variance
+
+OOB: Unused data (~37%) for quick validation.
+
+:::{.notes}
+Randomness + aggregation fixes DT's high variance.
+:::
+
+---
+
+## RF Key Components and Pruning
+
+**Components:**
+
+- Bagging: Reduces variance
+- Random Features: Ensures diversity
+- Aggregation: Combines outputs
+- Feature Importance: Avg impurity decrease
+- OOB Error: Internal validation
+
+:::{.notes}
+These make RF robust; less pruning needed.
+:::
+
+---
+
+## RF Parameters and Advantages
+
+**Parameters:**
+
+| Parameter | Description | Impact |
+|-----------|-------------|--------|
+| N Estimators | # Trees | More = stable, slower |
+| Max Features | Per split | sqrt(n) class; /3 reg |
+| Max Depth | Per tree | Controls complexity |
+| Bootstrap | Sampling | True for diversity |
+
+Tune: Grid search, monitor OOB.
+
+**Advantages over DT:**
+
+- Less overfitting (averaging)
+- Higher accuracy on tabular/noisy data
+- Feature rankings
+- Handles outliers better
+- Parallelizable
+
+:::{.notes}
+Key params for tuning; RF excels where DT overfits.
+:::
+
+---
+
+## When to Use
+
+- **Decision Trees**: Interpretable models, small/medium data, explainability key (e.g., medical decisions)
+- **Random Forests**: Noisy/high-dimensional data, accuracy priority (e.g., finance, customer analytics)
+- **Both**: Non-linear/tabular problems; avoid for sequential data (use RNNs)
+- Imbalanced: RF with weights/sampling
+- Quick Insights: Trees for rules; RF for rankings
+
+:::{.notes}
+Choose based on needs: explain vs. perform.
+:::
+
+---
+
+## Performance Considerations
+
+- **Training**: Trees O(n log n); RF O(n_estimators * n log n), parallelizable
+- **Prediction**: Trees O(depth); RF O(n_estimators * depth), faster with fewer trees
+- **Memory**: Scales with trees; store essentials
+- **Scalability**: RF handles 1000s features; subsample for millions samples
+- **Bias-Variance**: Trees high variance; RF low via averaging
+
+:::{.notes}
+RF trades some speed for better generalization.
+:::
+
+---
+
+## Advanced Techniques
+
+- **Gradient Boosting**: Sequential trees (XGBoost, LightGBM) for higher accuracy
+- **Extra Trees**: RF variant with random splits for speed
+- **Feature Selection**: Use RF importances iteratively
+- **Hybrids**: Stack RF with NNs or pipelines
+- **Extensions**: Isolation Forests for anomalies; RF for time series
+
+:::{.notes}
+Extend RF for advanced scenarios.
+:::
+
+---
+
+## Conclusion
+
+- **Decision Trees**: Foundational, interpretable for understanding decisions
+- **Random Forests**: Robust ensembles for accurate, production-ready predictions
+- **Key Takeaway**: Start simple with trees, scale to RF; always tune and validate
+
+Apply these for versatile ML on tabular data!
+
+:::{.notes}
+Essential tools—questions on implementation?
+:::
+
+---
