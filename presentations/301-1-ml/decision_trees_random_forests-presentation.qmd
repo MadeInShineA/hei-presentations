@@ -34,11 +34,10 @@ format:
    - Key Components
    - Parameters & Advantages
 
-3. **Key Takeaway
+3. **Key Takeaway**
    - When to Use
    - Performance Considerations
    - Advanced Techniques
-   - Conclusion
 
 ---
 
