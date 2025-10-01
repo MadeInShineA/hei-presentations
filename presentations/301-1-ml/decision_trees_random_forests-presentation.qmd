@@ -414,4 +414,16 @@ Apply these for versatile ML on tabular data!
 Essential tools—questions on implementation?
 :::
 
+## Sources
+
+**References**
+
+- [Scikit-learn Decision Trees](https://scikit-learn.org/stable/modules/tree.html)
+- [Random Forests Paper](https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf)
+- [Machine Learning Mastery: Trees](https://machinelearningmastery.com/decision-trees-for-machine-learning/)
+
+:::{.notes}
+Key sources for further reading on Decision Trees and Random Forests.
+:::
+
 ---

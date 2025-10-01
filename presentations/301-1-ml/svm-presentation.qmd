@@ -387,4 +387,12 @@ Wrap up: SVM toolkit staple. Open floor for discussion.
 
 ## Sources
 
-**Writing assistant** : Grock 4 fast free
+**References**
+
+- [Scikit-learn SVM](https://scikit-learn.org/stable/modules/svm.html)
+- [Support Vector Machines Guide](https://www.cs.cornell.edu/people/tj/publications/joachims_98a.pdf)
+- [Kernel Methods](https://en.wikipedia.org/wiki/Kernel_method)
+
+:::{.notes}
+Key sources for further reading on SVMs.
+:::

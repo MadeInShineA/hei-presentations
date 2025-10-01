@@ -356,3 +356,15 @@ Conclude by reiterating the core benefits. Open for Q&A: 'What questions do you 
 
 ---
 
+## Sources
+
+**References**
+
+- [Apache Spark Documentation](https://spark.apache.org/docs/latest/)
+- [Apache Parquet](https://parquet.apache.org/)
+- [Spark SQL Performance Tuning](https://spark.apache.org/docs/latest/sql-performance-tuning.html)
+
+::: notes
+Key sources for further reading on Spark I/O, partitioning, and Parquet.
+:::
+
