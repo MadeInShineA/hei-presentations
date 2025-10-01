@@ -29,6 +29,7 @@ format:
 7. **Parquet Introduction**
 8. **Parquet Structure: Layers**
 9. **Parquet Structure: Diagram**
+10. **Parquet Data Example**
 10. **Key Takeaways**
 11. **When to Use & Next Steps**
 12. **Conclusion**
