@@ -35,7 +35,8 @@ format:
 12. **Conclusion**
 
 ::: notes
-Present the agenda to outline the structure. Highlight how we build from foundational concepts to practical tips and new tools like Parquet. Ask if the audience has prior Spark experience to gauge level.
+“Today, we’ll explore how to optimize Spark I/O through smart partitioning and leverage Parquet for high-performance analytics. We’ll start with the fundamentals of Spark I/O, dive into partitioning best practices—including sizing, pruning, and common pitfalls—and then introduce Apache Parquet: what it is, why it matters, and how its columnar structure boosts performance.
+    Before we begin—how many of you have used Spark for data processing or ETL? That’ll help me tailor the pace.”
 :::
 
 ---
@@ -58,7 +59,8 @@ Apache Spark I/O handles efficient data read/write across distributed systems.
 - Shuffling: Data redistribution
 
 ::: notes
-Explain Spark I/O as the backbone for distributed data processing. Stress key aspects like formats and storage for real-world applicability. Transition to core components, noting how they enable scalability.
+“At its core, Spark I/O is how Spark reads from and writes to distributed storage—whether that’s HDFS, S3, or local files. It supports multiple formats like CSV, JSON, ORC, and especially Parquet.
+    What makes Spark powerful is its ability to infer schemas, split data into partitions for parallel processing, and redistribute data via shuffling when needed—all while keeping operations fault-tolerant through lineage tracking.”
 :::
 
 ---
@@ -95,7 +97,9 @@ flowchart LR
 - Connectors: Kafka, etc.
 
 ::: notes
-Walk through the Mermaid diagram step-by-step, emphasizing partitioning's role in parallelism. Mention operations like read/write to connect theory to practice. Point out how caching reduces I/O bottlenecks.
+“Think of Spark I/O as a pipeline: data flows from a source into a DataFrame, gets partitioned across the cluster, processed in parallel, possibly shuffled for joins or aggregations, and finally written out.
+    The key principles here are partitioning for parallelism, data locality to minimize network traffic, fault tolerance via lineage, and caching to avoid re-reading expensive data.
+    This pipeline also supports streaming and integrations with systems like Kafka—but today, we’ll focus on batch workloads and file-based I/O.”
 :::
 
 ---
@@ -122,7 +126,12 @@ Divides data for parallel processing, boosting performance.
 - Pruning: Skip irrelevant data
 
 ::: notes
-Define partitioning simply: dividing data for parallel work. Discuss types and strategies, using examples like date-based partitioning. Warn about mechanics like repartition to avoid common errors.
+“Partitioning is the act of splitting data into chunks that can be processed in parallel. There are three main types:   
+
+    Input partitions, created when reading files (usually ~128MB each),  
+    Shuffle partitions, generated during transformations like joins,  
+    And output partitions, which you control when writing data—often by columns like date or region.
+    Strategies include hash, range, or custom partitioning. And techniques like bucketing can optimize joins, while partition pruning lets Spark skip irrelevant files entirely—dramatically cutting I/O.”
 :::
 
 ---
@@ -146,7 +155,12 @@ Define partitioning simply: dividing data for parallel work. Discuss types and s
 - Monitor skew
 
 ::: notes
-Highlight benefits with a quick example of speedup. Discuss risks like skew, sharing a real-world story of imbalance causing delays. Introduce mitigation as teaser for best practices.
+“When done right, partitioning unlocks full cluster utilization and even resource distribution. But get it wrong, and you’ll face serious issues:   
+
+    Too many small partitions create scheduling overhead,  
+    Data skew leaves some tasks running long after others finish,  
+    And oversized partitions can cause memory pressure or OOM errors.
+    The good news? These are avoidable—with the right strategies, which we’ll cover next.”
 :::
 
 ---
@@ -162,7 +176,10 @@ Highlight benefits with a quick example of speedup. Discuss risks like skew, sha
 - File example: year/month/day
 
 ::: notes
-Recommend optimal partition size with rationale: too small increases overhead, too large wastes resources. Give strategy examples like partitioning by region for geo-queries to illustrate pruning gains.
+“Aim for 100MB to 1GB per partition—this balances parallelism against task overhead.
+    Choose partition columns wisely: use low-cardinality, frequently filtered fields like country, year, or product_category.
+    Avoid high-cardinality keys like user_id—they create too many tiny partitions.
+    A classic pattern: s3://data/year=2024/month=06/day=15/—this enables efficient time-based pruning.”
 :::
 
 ---
@@ -192,7 +209,13 @@ flowchart TD
 ```
 
 ::: notes
-Explain pruning with a before/after I/O savings example (e.g., scanning 10% of data). Use the diagram to visualize pitfalls; suggest salting for skew and coalescing for small files.
+“Partition pruning is one of Spark’s superpowers. If your query filters on a partition column—say, WHERE year = 2024—Spark reads only those files, skipping 90%+ of your data in many cases.
+    But watch out for pitfalls:   
+
+    Too many partitions overwhelm the metadata layer,  
+    Skewed data causes straggler tasks—fix with salting or AQE,  
+    Small files waste resources—use coalesce() or compaction,  
+    And deeply nested directories (e.g., 5+ levels) reduce pruning effectiveness.”
 :::
 
 ---
@@ -216,7 +239,12 @@ Explain pruning with a before/after I/O savings example (e.g., scanning 10% of d
 | adaptive.enabled | Dynamic | true |
 
 ::: notes
-Summarize guidelines verbally, tying back to earlier slides. Walk through the config table, explaining each parameter's impact. Encourage audience to note these for their projects.
+“To recap: design partitions around your query patterns, keep them 100MB–1GB, limit depth to 2–3 levels, and always monitor for skew or small files.
+    Key Spark configs to know:   
+
+    spark.sql.files.maxPartitionBytes → controls input partition size (set to 256MB–1GB),  
+    spark.sql.shuffle.partitions → start with 200–2000 based on cluster size,  
+    And enable Adaptive Query Execution (spark.sql.adaptive.enabled=true)—it auto-tunes partitions and handles skew at runtime.”
 :::
 
 ---
@@ -243,7 +271,9 @@ Columnar format for Spark/big data analytics.
 | Opt. | Basic | Advanced |
 
 ::: notes
-Introduce Parquet as a columnar powerhouse for analytics. Compare to row formats using the table to show advantages. Tease how it pairs with partitioning for max efficiency.
+“Now, let’s talk about Apache Parquet—the gold standard for analytical data in Spark.
+    Unlike row-based formats like CSV or JSON, Parquet stores data column by column. This means if your query only needs salary, Spark reads just that column—not the entire row.
+    Benefits? 50–95% smaller files, faster scans, predicate pushdown, and schema evolution—so you can safely add or rename columns over time without breaking pipelines.”
 :::
 
 ---
@@ -265,7 +295,14 @@ Introduce Parquet as a columnar powerhouse for analytics. Compare to row formats
 - Types: Nested support
 
 ::: notes
-Describe each layer briefly, focusing on how row groups and pages support compression. Mention stats in footer for pruning, linking back to partitioning concepts.
+“A Parquet file is organized in layers:   
+
+    It starts with a header,  
+    Then one or more row groups (typically 128MB–1GB),  
+    Each row group contains column chunks—one per column,  
+    Which are further split into pages (~1MB) for fine-grained compression,  
+    And ends with a footer that holds the schema and min/max statistics for every column.
+    These stats enable predicate pushdown: Spark can skip entire row groups if they don’t match your filter.”
 :::
 
 ---
@@ -288,7 +325,8 @@ graph TD
 ```
 
 ::: notes
-Use the diagram to illustrate Parquet's structure. Point out how column chunks enable selective reading, reinforcing why it's ideal for analytical queries.
+“This diagram shows the hierarchy: a file contains row groups, each with column chunks broken into data pages. The footer holds metadata.
+    Because columns are stored separately, analytical queries that aggregate or filter a few columns become dramatically faster—and use far less I/O.”
 :::
 
 ---
@@ -313,7 +351,11 @@ Use the diagram to illustrate Parquet's structure. Point out how column chunks e
 This allows reading only needed columns, e.g., just "Salary" for aggregation queries.
 
 :::{.notes}
-Demonstrate how Parquet stores data column-by-column, enabling efficient queries. Highlight stats for predicate pushdown and encodings for compression.
+“Imagine this simple table with ID, Name, Age, and Salary. In Parquet, each column is stored independently.
+    The ID column might store [1,2,3] with min=1, max=3.
+    Name uses dictionary encoding—storing unique strings once.
+    Age might use run-length encoding.
+    So when you run SELECT AVG(Salary), Spark reads only the Salary column chunk—ignoring everything else. That’s the power of columnar storage.”
 :::
 
 ---
@@ -342,7 +384,13 @@ Demonstrate how Parquet stores data column-by-column, enabling efficient queries
 - Monitor performance
 
 ::: notes
-Recap partitioning and Parquet points, using the checklist to reinforce action items. Ask the audience what they plan to implement first.
+“To maximize Spark performance:   
+
+    Partition smartly: 100MB–1GB, low-cardinality, aligned with queries,  
+    Use Parquet: for compression, column pruning, and faster analytics,  
+    Enable AQE: let Spark auto-fix skew and coalesce small partitions,  
+    And always test: monitor I/O, task duration, and file counts.
+    Think of this as a checklist for your next data pipeline.”
 :::
 
 ---
@@ -364,7 +412,14 @@ Recap partitioning and Parquet points, using the checklist to reinforce action i
 - Iterate on metrics
 
 ::: notes
-Discuss use cases with examples from industry (e.g., data lakes in e-commerce). Suggest next steps like experimenting with Parquet in their Spark jobs.
+“These techniques shine in data lakes, ETL pipelines, reporting workloads, and anywhere you have evolving schemas.
+    To get started:   
+
+    Write your next dataset in Parquet with Snappy compression,  
+    Partition by 1–2 meaningful dimensions,  
+    Enable AQE,  
+    And measure the difference in job duration and I/O.
+    You’ll likely see dramatic gains.”
 :::
 
 ---
@@ -377,7 +432,9 @@ Discuss use cases with examples from industry (e.g., data lakes in e-commerce). 
 **Apply these practices to optimize your Spark workflows and achieve better performance!**
 
 ::: notes
-Conclude by reiterating the core benefits. Open for Q&A: 'What questions do you have on partitioning or Parquet?'
+“In summary: thoughtful partitioning and columnar storage with Parquet are two of the highest-leverage optimizations in Spark. Together, they reduce I/O, accelerate queries, and scale efficiently.
+    Apply these practices, and you’ll build faster, more reliable data pipelines.
+    Now—I’d love your questions! What part are you most excited to try in your own work?”
 :::
 
 ---
@@ -391,6 +448,6 @@ Conclude by reiterating the core benefits. Open for Q&A: 'What questions do you 
 - [Spark SQL Performance Tuning](https://spark.apache.org/docs/latest/sql-performance-tuning.html)
 
 ::: notes
-Key sources for further reading on Spark I/O, partitioning, and Parquet.
+“All the details are in the official docs—Spark’s performance tuning guide, Parquet’s site, and the main Spark documentation. I encourage you to explore them!”
 :::
 
