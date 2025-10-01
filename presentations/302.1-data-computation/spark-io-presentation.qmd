@@ -292,6 +292,31 @@ Use the diagram to illustrate Parquet's structure. Point out how column chunks e
 
 ---
 
+## Parquet Data Example
+
+**Simple Dataset (Row-wise view):**
+
+| ID | Name | Age | Salary |
+|----|------|-----|--------|
+| 1  | Alice| 30  | 50000  |
+| 2  | Bob  | 25  | 45000  |
+| 3  | Carol| 35  | 60000  |
+
+**Parquet Storage (Columnar):**
+
+- **ID Column Chunk:** [1, 2, 3] (with min=1, max=3 stats)
+- **Name Column Chunk:** ["Alice", "Bob", "Carol"] (dictionary encoded)
+- **Age Column Chunk:** [30, 25, 35] (RLE encoded)
+- **Salary Column Chunk:** [50000, 45000, 60000] (compressed)
+
+This allows reading only needed columns, e.g., just "Salary" for aggregation queries.
+
+:::{.notes}
+Demonstrate how Parquet stores data column-by-column, enabling efficient queries. Highlight stats for predicate pushdown and encodings for compression.
+:::
+
+---
+
 ## Key Takeaways
 
 **Partitioning**:
