@@ -219,12 +219,18 @@ def _(COLORS, mo):
 
     <h3 style="color: {COLORS['accent']};">🔄 Execution Flow</h3>
     <ol>
-    <li>Define schema and create Spark DataFrame from generated data</li>
-    <li>Perform write/read operations for both CSV and Parquet formats</li>
-    <li>Measure and compare timing and file sizes</li>
-    <li>Run computations, filters, and schema evolution</li>
-    <li>Generate visualizations and performance metrics</li>
-    <li>Save results to demo_data directory</li>
+    <li>Generate synthetic dataset (user_id, region, age, salary) using NumPy and create Pandas DataFrame</li>
+    <li>Define Spark schema (StructType with Integer/String fields) and convert to Spark DataFrame, coalesce to 1 partition</li>
+    <li>Create demo_data directory and set CSV/Parquet paths</li>
+    <li>Write Spark DF to CSV (with header, overwrite), time the operation, calculate file size (sum of part files)</li>
+    <li>Write Spark DF to Parquet (overwrite), time the operation, calculate file size</li>
+    <li>Read CSV back into Spark DF (using schema), time the read</li>
+    <li>Read Parquet back into Spark DF, time the read</li>
+    <li>Perform computation: filter age > 30, group by region, avg salary for both DFs, time each</li>
+    <li>Schema evolution: Add 'bonus' column (lit(1000)), write to new Parquet path, read evolved DF, print schemas and evolution write time</li>
+    <li>Generate 2x2 subplot visualizations: bar charts for write/read times, file sizes (MB), computation times</li>
+    <li>Print performance summary table (times, sizes, % improvements) and completion message</li>
+    <li>All outputs saved to demo_data directory</li>
     </ol>
     </div>
     """
