@@ -228,7 +228,7 @@ efficient time-based pruning.”
 
 **Pitfalls**:
 
-- Too many: Metadata overhead
+- Too many partitions: Metadata overhead
 - Skew: Use salting
 - Small files: Coalesce
 - Deep nesting: Limits effectiveness
